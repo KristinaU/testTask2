@@ -1,3 +1,5 @@
+from time import strftime, gmtime
+
 import users as users
 from flask import Flask
 from flask import request
@@ -6,6 +8,7 @@ import json
 from flask import jsonify
 import random
 import string
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
@@ -50,9 +53,15 @@ def users():
 @app.route('/login', methods=['POST'])
 def login():
 
+    start_time = datetime.now()
+
+    expire_time = datetime.now() + timedelta(minutes = +30)
+
     letters = 'abcdefghyjklmnopqrstuvwxyz1234567890'
 
     if check_user(request.form['username'], request.form['password']):
+        print('Now is ' + str(start_time))
+        print('Token expires at ' + str(expire_time))
         return ''.join(random.choice(letters) for i in range(32))
     else:
         return 400
