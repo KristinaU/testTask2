@@ -8,7 +8,7 @@ from flask import jsonify
 app = Flask(__name__)
 
 r = redis.Redis(host='localhost', port=6379, db=0)
-hashUsers = 'Users'
+Users = {'id', 'username', 'password'}
 
 @app.route('/')
 def hello_world():
@@ -19,7 +19,7 @@ def hello_world():
 @app.route('/registration', methods=['POST'])
 def registration():
     if create_user(request.form['id'], request.form['username'], request.form['password']):
-        print (r.hgetall('Users'))
+        print (r.hvals('Users'))
         return 'yeah haaahhh', 200
 
 #        if r.get(1) == 'username':
@@ -35,12 +35,11 @@ def create_user(id, username, password):
     r.hmset('Users', new_user)
     return True
 
-
 # list of all users
-#@app.route('/users', methods=['GET'])
-#def get_users(self):
-#    print (r.hgetall('Users'))
-#    return r.hgetall(self, 'Users')
+@app.route('/users', methods=['GET'])
+def users():
+    print (r.hgetall('Users'))
+    return jsonify(str(r.hvals('Users')))
 
 
 if __name__ == '__main__':
